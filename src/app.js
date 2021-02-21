@@ -3,8 +3,6 @@ const cors = require('cors');
 
 const app = express();
 
-console.log(process.env.DB_NAME);
-
 // ==> Conectando  e autenticando base de dados
 const database = require('./config/db.config');
 (async () => {

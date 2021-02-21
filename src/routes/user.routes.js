@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { allUsers, newUser, deleteUser } = require('../controllers/user.controllers');
+const { allUsers, newUser, deleteUser, alterUser } = require('../controllers/user.controllers');
 
 // => Rota GET que lista todos usuarios 
 // -- (/api/v1/users)
@@ -26,16 +26,17 @@ router.post('/api/v1/users/register', (req, res) => {
 router.delete('/api/v1/users/delete/:username', (req, res) => {
     deleteUser(req, res)
         .catch(err => {
-            console.log(err);
             res.json({ sucess: false, error: err });
         });
 });
 
-
 // => Rota PUT que altera um usuário a partir de um param 
 // -- (/api/v1/users/alter/:username )
 router.put('/api/v1/users/alter/:username', (req, res) => {
-    
+    alterUser(req, res)
+    .catch(err => {
+        res.json({ sucess: false, error: err });
+    });
 });
 
 module.exports = router;

@@ -1,7 +1,13 @@
 const bcrypt = require('bcrypt');
 const modelUser = require('../models/user.model');
+const hashPassword = require('../utils/hashPassword');
 
 let userController = {};
+
+// => Esse método identifica se o 'user' existe na base de dados
+userController.userExists = async (user) => {
+    return modelUser.findOne({ where: { username: user, }});
+}
 
 // => Esse método lista todos 'users' registrados
 userController.allUsers = async (req, res) => {
@@ -32,29 +38,35 @@ userController.newUser = async (req, res) => {
                         res.json({ sucess: false, message: 'Invalid username' });
                     }
                     else{
+                        let encryptPassword;
+                        try{
+                            bcrypt.hash(req.body.password, 10)
+                                .then(hash => {
+                                    encryptPassword = hash;
 
-                        bcrypt.hash(req.body.password, 10)
-                            .then(hash => {
-                                let encryptPassword = hash;
-
-                                let newUser = new modelUser({
-                                    username: req.body.username,
-                                    password: encryptPassword,
-                                    email: req.body.email,
-                                    isAdmin: req.body.isAdmin
-                                });
-
-                                newUser.save()
-                                    .then(() => {
-                                        res.status(201).json({ sucess: true, message: 'User created with sucess' });
-                                    })
-                                    .catch(err => {
-                                        res.status(500).json({ sucess: false, message: err });
+                                    let newUser = new modelUser({
+                                        username: req.body.username,
+                                        password: encryptPassword,
+                                        email: req.body.email,
+                                        isAdmin: req.body.isAdmin
                                     });
-                            })
-                            .catch(err => {
-                                res.status(500).json({ sucess: false, message: err });
-                            }) 
+
+                                    newUser.save()
+                                        .then(() => {
+                                            res.status(201).json({ sucess: true, message: 'User created with sucess' });
+                                        })
+                                        .catch(err => {
+                                            res.status(500).json({ sucess: false, message: err });
+                                        });
+                                })
+                                .catch(err => {
+                                    res.status(500).json({ sucess: false, message: 'Error on encryptation' + err });
+                                });
+                        }
+                        catch(err){
+                            res.status(500).json({ sucess: false, message: 'Error on sign up.', error: err });
+                        }
+
                 }
             })
         }
@@ -72,8 +84,7 @@ userController.newUser = async (req, res) => {
 userController.deleteUser = async (req, res) => {
     modelUser.sync();
     try{
-        const userExists = modelUser.findOne({ where: { username: req.params.username, }});
-        if(userExists != null){
+        if(userController.userExists(req.params.username) != null){
             modelUser.destroy({ where: { username: req.params.username }});
             res.status(200).json({ sucess: true, message: 'User deleted with sucess' });
         }
@@ -82,6 +93,37 @@ userController.deleteUser = async (req, res) => {
         }
     }
     catch(err){
+        res.status(409).json({ sucess: false, error: err });
+    }
+}
+
+// => Esse método é responsável por alterar os dados de um 'user'
+userController.alterUser = async (req, res) => {
+    modelUser.sync();
+    try{
+        if(userController.userExists(req.params.username) != null){
+            let encryptPassword;
+            try{
+                encryptPassword = await hashPassword(req.body.password)
+            }
+            catch{
+                res.status(500).json({ sucess: false, message: err });
+            }
+            
+            await modelUser.update({ 
+                username: req.body.username,
+                password: encryptPassword,
+                email: req.body.email,
+            },
+            { where: { username: req.params.username }});
+            res.status(200).json({ sucess: true, message: 'User altered with sucess' });
+        }
+        else{
+            res.status(404).json({ sucess: true, message: 'User not exists or not found on database' });
+        }
+    }
+    catch(err){
+        console.log(err)
         res.status(409).json({ sucess: false, error: err });
     }
 }
