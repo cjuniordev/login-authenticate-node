@@ -6,12 +6,9 @@
   "scripts": {
     "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cjuniordev/login-authentication-node.git"
-  },
+  "repository": "git+https://github.com/cjuniordev/login-authentication-node.git",
   "keywords": [],
-  "author": "",
+  "author": "cjuniordev <carlosrogeriocr02@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/cjuniordev/login-authentication-node/issues"
