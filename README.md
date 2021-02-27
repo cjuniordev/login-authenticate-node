@@ -21,7 +21,7 @@ $ git clone <https://github.com/cjuniordev/login-authentication-node.git>
 $ cd login-authentication-node
 
 # Install dependencies
-$ npm i
+$ yarn install
 ```
 
 ### Configure environment variables
