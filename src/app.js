@@ -5,15 +5,15 @@ const app = express();
 
 // ==> Conectando  e autenticando base de dados
 const database = require('./config/db.config');
-(async () => {
-    try {
-        await database.authenticate();
-        console.log('Connection has been established successfully.');
-    } catch (err) {
-        console.log(`Unable to connect to the database: ${err}`);
-    }
-    const sync = database.sync();
-})
+// eslint-disable-next-line no-unused-expressions
+
+database
+  .authenticate()
+  .then(console.log('Connection has been established successfully.'))
+  .catch((err) => {
+    console.log(`Unable to connect to the database: ${err}`);
+  });
+database.sync();
 
 // ==> Rotas da API:
 const index = require('./routes/index');
