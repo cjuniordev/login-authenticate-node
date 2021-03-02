@@ -17,24 +17,24 @@ router.get('/api/v1/users', (req, res) => {
 });
 
 // => Rota POST que registra novos usuários
-// -- (/api/v1/users/register)
-router.post('/api/v1/users/register', (req, res) => {
+// -- (/api/v1/users)
+router.post('/api/v1/users', (req, res) => {
   newUser(req, res).catch((err) => {
     res.json({ sucess: false, error: err });
   });
 });
 
 // => Rota DELETE que deleta um usuário a partir de um 'username' como param
-// -- (/api/v1/users/delete/:username)
-router.delete('/api/v1/users/delete/:username', (req, res) => {
+// -- (/api/v1/users/:username)
+router.delete('/api/v1/users/:username', (req, res) => {
   deleteUser(req, res).catch((err) => {
     res.json({ sucess: false, error: err });
   });
 });
 
 // => Rota PUT que altera um usuário a partir de um param
-// -- (/api/v1/users/alter/:username )
-router.put('/api/v1/users/alter/:username', (req, res) => {
+// -- (/api/v1/users/:username )
+router.put('/api/v1/users/:username', (req, res) => {
   alterUser(req, res).catch((err) => {
     res.json({ sucess: false, error: err });
   });

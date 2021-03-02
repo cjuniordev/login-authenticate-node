@@ -22,11 +22,15 @@ userController.allUsers = async (req, res) => {
 
 // => Esse método cria novos 'users' no BD
 // => Recebe os seguintes parametros:
-// -- username = Nome Único(apelido) { STRING }
-// -- password = Senha { STRING }
-// -- password2 = Confirmação da Senha { STRING }
-// -- email = Email válido { STRING }
-// -- isAdmin = Permissão de Admin { BOOL }
+/**
+ * {
+ *  "username": "João",
+ *  "password": "123456",
+ *  "password2": "123456",
+ *  "email": "joao@gmail.com",
+ *  "isAdmin": "false"
+ * }
+ */
 userController.newUser = async (req, res) => {
   ModelUser.sync();
   if (req.body.username && req.body.password) {
@@ -117,7 +121,7 @@ userController.alterUser = async (req, res) => {
       let encryptPassword;
       try {
         encryptPassword = await hashPassword(req.body.password);
-      } catch {
+      } catch (err) {
         res.status(500).json({ sucess: false, message: err });
       }
 
