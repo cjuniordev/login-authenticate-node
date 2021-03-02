@@ -2,11 +2,20 @@ const express = require('express');
 const router = express.Router();
 
 const {
+  authUser,
   allUsers,
   newUser,
   deleteUser,
   alterUser,
 } = require('../controllers/user.controllers');
+
+// => Rota que 'loga' usuário
+// -- (/api/v1/users/auth)
+router.post('/api/v1/users/auth', (req, res) => {
+  authUser(req, res).catch((err) => {
+    res.json({ sucess: false, error: err });
+  });
+});
 
 // => Rota GET que lista todos usuarios
 // -- (/api/v1/users)

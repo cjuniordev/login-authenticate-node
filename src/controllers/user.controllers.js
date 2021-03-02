@@ -9,6 +9,45 @@ userController.userExists = async (user) => {
   return ModelUser.findOne({ where: { username: user } });
 };
 
+// => Esse método autentica o 'user'
+userController.authUser = async (req, res) => {
+  try {
+    ModelUser.sync();
+
+    const username = req.body.username;
+    const userExists = userController.userExists(username);
+
+    if (userExists != null) {
+      const user = await ModelUser.findAll({
+        where: { username: username },
+      });
+      const hash = user.dataValues.password;
+      console.log(user);
+      bcrypt
+        .compare(req.body.password, hash)
+        .then((result, err) => {
+          if (result) {
+            res.status(200).json(result);
+          } else {
+            res.status(406).json({
+              sucess: false,
+              message: 'Passwords do not match',
+              error: err,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(username, hash);
+          res.json({ sucess: false, error: err });
+        });
+    } else {
+      res.json({ sucess: false, message: 'User not exists' });
+    }
+  } catch (err) {
+    res.json({ sucess: false, error: err });
+  }
+};
+
 // => Esse método lista todos 'users' registrados
 userController.allUsers = async (req, res) => {
   ModelUser.sync();
