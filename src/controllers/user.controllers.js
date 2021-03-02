@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const ModelUser = require('../models/user.model');
 const hashPassword = require('../utils/hashPassword');
+
+require('dotenv').config();
 
 const userController = {};
 
@@ -26,9 +29,14 @@ userController.authUser = async (req, res) => {
         .compare(req.body.password, hash)
         .then((result, err) => {
           if (result) {
+            const id = user.dataValues.id;
+            const token = jwt.sign({ id }, process.env.SECRET, {
+              expiresIn: 300,
+            });
             res.status(200).json({
               sucess: true,
               message: 'User authenticate with sucess',
+              token: token,
             });
           } else {
             res.status(406).json({
