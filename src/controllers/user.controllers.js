@@ -18,16 +18,18 @@ userController.authUser = async (req, res) => {
     const userExists = userController.userExists(username);
 
     if (userExists != null) {
-      const user = await ModelUser.findAll({
+      const user = await ModelUser.findOne({
         where: { username: username },
       });
       const hash = user.dataValues.password;
-      console.log(user);
       bcrypt
         .compare(req.body.password, hash)
         .then((result, err) => {
           if (result) {
-            res.status(200).json(result);
+            res.status(200).json({
+              sucess: true,
+              message: 'User authenticate with sucess',
+            });
           } else {
             res.status(406).json({
               sucess: false,
@@ -37,7 +39,6 @@ userController.authUser = async (req, res) => {
           }
         })
         .catch((err) => {
-          console.log(username, hash);
           res.json({ sucess: false, error: err });
         });
     } else {
