@@ -1,13 +1,9 @@
 const bcrypt = require('bcrypt');
 const ModelUser = require('../models/user.model');
 const hashPassword = require('../utils/hashPassword');
+const userExists = require('../utils/userExists');
 
 const userController = {};
-
-// => Esse método identifica se o 'user' existe na base de dados
-userController.userExists = async (user) => {
-  return ModelUser.findOne({ where: { username: user } });
-};
 
 // => Esse método lista todos 'users' registrados
 userController.allUsers = async (req, res) => {
@@ -97,7 +93,7 @@ userController.newUser = async (req, res) => {
 userController.deleteUser = async (req, res) => {
   ModelUser.sync();
   try {
-    if (userController.userExists(req.params.username) != null) {
+    if (userExists(req.params.username)) {
       ModelUser.destroy({ where: { username: req.params.username } });
       res
         .status(200)
@@ -117,7 +113,7 @@ userController.deleteUser = async (req, res) => {
 userController.alterUser = async (req, res) => {
   ModelUser.sync();
   try {
-    if (userController.userExists(req.params.username) != null) {
+    if (userExists(req.params.username)) {
       let encryptPassword;
       try {
         encryptPassword = await hashPassword(req.body.password);

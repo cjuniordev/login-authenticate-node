@@ -1,20 +1,27 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ModelUser = require('../models/user.model');
-const userController = require('./user.controllers');
+const userExists = require('../utils/userExists');
 
 require('dotenv').config();
 
 const logController = {};
 
 // => Esse método autentica o 'user'
+// => Recebe os seguintes parametros:
+/**
+ * {
+ *  "username": "joao",
+ *  "password": "123456"
+ * }
+ */
 logController.authUser = async (req, res) => {
   try {
     ModelUser.sync();
 
-    const userExists = userController.userExists(req.body.username);
+    const exist = userExists(req.body.username);
 
-    if (userExists != null) {
+    if (exist) {
       const user = await ModelUser.findOne({
         where: { username: req.body.username },
       });
