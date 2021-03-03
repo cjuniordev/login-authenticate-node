@@ -51,4 +51,12 @@ logController.authUser = async (req, res) => {
   }
 };
 
+logController.clearToken = (req, res) => {
+  res.status(200).json({
+    sucess: true,
+    message: 'Token was clear with sucess',
+    token: null,
+  });
+};
+
 module.exports = logController;
