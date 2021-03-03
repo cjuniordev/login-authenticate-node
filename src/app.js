@@ -18,6 +18,7 @@ database.sync();
 // ==> Rotas da API:
 const index = require('./routes/index');
 const userRoutes = require('./routes/user.routes');
+const logRoutes = require('./routes/log.routes');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -26,5 +27,6 @@ app.use(cors());
 
 app.use(index);
 app.use(userRoutes);
+app.use(logRoutes);
 
 module.exports = app;

@@ -1,60 +1,12 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const ModelUser = require('../models/user.model');
 const hashPassword = require('../utils/hashPassword');
-
-require('dotenv').config();
 
 const userController = {};
 
 // => Esse método identifica se o 'user' existe na base de dados
 userController.userExists = async (user) => {
   return ModelUser.findOne({ where: { username: user } });
-};
-
-// => Esse método autentica o 'user'
-userController.authUser = async (req, res) => {
-  try {
-    ModelUser.sync();
-
-    const username = req.body.username;
-    const userExists = userController.userExists(username);
-
-    if (userExists != null) {
-      const user = await ModelUser.findOne({
-        where: { username: username },
-      });
-      const hash = user.dataValues.password;
-      bcrypt
-        .compare(req.body.password, hash)
-        .then((result, err) => {
-          if (result) {
-            const id = user.dataValues.id;
-            const token = jwt.sign({ id }, process.env.SECRET, {
-              expiresIn: 300,
-            });
-            res.status(200).json({
-              sucess: true,
-              message: 'User authenticate with sucess',
-              token: token,
-            });
-          } else {
-            res.status(406).json({
-              sucess: false,
-              message: 'Passwords do not match',
-              error: err,
-            });
-          }
-        })
-        .catch((err) => {
-          res.json({ sucess: false, error: err });
-        });
-    } else {
-      res.json({ sucess: false, message: 'User not exists' });
-    }
-  } catch (err) {
-    res.json({ sucess: false, error: err });
-  }
 };
 
 // => Esse método lista todos 'users' registrados
