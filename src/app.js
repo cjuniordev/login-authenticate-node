@@ -5,7 +5,6 @@ const app = express();
 
 // ==> Conectando  e autenticando base de dados
 const database = require('./config/db.config');
-// eslint-disable-next-line no-unused-expressions
 
 database
   .authenticate()
@@ -23,7 +22,12 @@ const logRoutes = require('./routes/log.routes');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.json({ type: 'application/vnd.api+json' }));
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:8080',
+    optionsSuccessStatus: 200,
+  })
+);
 
 app.use(index);
 app.use(userRoutes);
