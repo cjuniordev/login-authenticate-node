@@ -18,6 +18,7 @@ database.sync();
 const index = require('./routes/index');
 const userRoutes = require('./routes/user.routes');
 const logRoutes = require('./routes/log.routes');
+const authRoutes = require('./routes/auth.routes');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -32,5 +33,6 @@ app.use(
 app.use(index);
 app.use(userRoutes);
 app.use(logRoutes);
+app.use(authRoutes);
 
 module.exports = app;
