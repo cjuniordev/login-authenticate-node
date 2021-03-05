@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 const ModelUser = require('../models/user.model');
 const userExists = require('../utils/userExists');
 
-require('dotenv').config();
-
 const logController = {};
 
 // => Esse método autentica o 'user'
